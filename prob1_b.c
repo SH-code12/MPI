@@ -38,20 +38,20 @@ int main(int argc, char* argv[]) {
         printf("Please enter Upper bound...\n");
         scanf("%d", &y);
         //=================================================
-        int range= (y-x);
+        int range= (y-x)+1;
         elements_per_process = range / (size - 1);
         int start_index;
         if (size > 1) {
             int i;
             for (i = 0; i < size - 2; i++) {
-                start_index = i * elements_per_process;
+                start_index = x+(i * elements_per_process);
                 MPI_Send(&elements_per_process, 1, MPI_INT, i + 1, 0, MPI_COMM_WORLD);
                 MPI_Send(&start_index, 1, MPI_INT, i + 1, 0, MPI_COMM_WORLD);
             }
 
             // last process takes remaining
-            start_index = i * elements_per_process;
-            int remaining_eles = range - start_index;
+            start_index = x+(i * elements_per_process);
+            int remaining_eles = elements_per_process + ( range % (size - 1) );
             MPI_Send(&remaining_eles, 1, MPI_INT, i + 1, 0, MPI_COMM_WORLD);
             MPI_Send(&start_index, 1, MPI_INT, i + 1, 0, MPI_COMM_WORLD);
         }
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
         MPI_Recv(&start_index_received, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
         int subarray_count=0;
-        for (int i = start_index_received+1; i <= (elements_received + start_index_received); i++) {
+        for (int i = start_index_received; i < (elements_received + start_index_received); i++) {
             if(isPrime(i)){subarray_count++;}
         }
         //printf("Hello from slave#%d prime count in my partition is %d.\n", rank, subarray_count);
