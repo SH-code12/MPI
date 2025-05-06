@@ -1,12 +1,8 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <math.h>
-
 # include <stdbool.h>
-
-
 
 bool isPrime(int n) {
 
@@ -31,22 +27,11 @@ bool isPrime(int n) {
 }
 
 
-
 int main(int argc, char* argv[]) {
 
     int x, y, rank, size, n, elements_per_process, elements_received, start_index_received;
 
-
-
-
-
     MPI_Status status;
-
-
-
-    double start_time = MPI_Wtime();
-
-
 
     MPI_Init(&argc, &argv);
 
@@ -54,7 +39,7 @@ int main(int argc, char* argv[]) {
 
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-
+        double start_time = MPI_Wtime();
 
     //=========================================
 
@@ -77,7 +62,7 @@ int main(int argc, char* argv[]) {
         //Handle case if size==1
         
         
-         if (size == 1) {
+        if (size == 1) {
     int count = 0;
     for (int i = x; i <= y; i++) {
         if (isPrime(i)) {
@@ -111,9 +96,6 @@ int main(int argc, char* argv[]) {
                 MPI_Send(&start_index, 1, MPI_INT, i + 1, 0, MPI_COMM_WORLD);
 
             }
-
-
-
             // last process takes remaining
 
             start_index = x + (i * elements_per_process);
@@ -125,8 +107,6 @@ int main(int argc, char* argv[]) {
             MPI_Send(&start_index, 1, MPI_INT, i + 1, 0, MPI_COMM_WORLD);
 
         }
-
-
 
         int count = 0;
 
@@ -142,11 +122,7 @@ int main(int argc, char* argv[]) {
 
             int* primesRecived = (int*)malloc(temp * sizeof(int));
 
-
-
             MPI_Recv(primesRecived, temp, MPI_INT, i, 0, MPI_COMM_WORLD, &status);
-
-
 
             printf("Hello from slave# %d number of prime numbers in my partition is %d \n", rank_recived, temp);
 
@@ -156,13 +132,9 @@ int main(int argc, char* argv[]) {
 
                 printf("%d ", primesRecived[i]);
 
-
-
             }
 
             printf("\n \n");
-
-
 
             count += temp;
 
@@ -170,11 +142,7 @@ int main(int argc, char* argv[]) {
 
         }
 
-
-
         double end_time = MPI_Wtime();
-
-
 
         printf("Master process announce the prime numbers within given input range is %d.\n", count);
 
@@ -183,7 +151,6 @@ int main(int argc, char* argv[]) {
         printf("Thanks for using our program\n");
 
     }
-
 
 
     //=========================================
@@ -226,11 +193,7 @@ int main(int argc, char* argv[]) {
 
         MPI_Send(primes, subarray_count, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
-
-
     }
-
-
 
     //=========================================
 
