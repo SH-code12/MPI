@@ -19,10 +19,10 @@ bool isPrime(int n) {
 int main(int argc, char* argv[]) {
     int rank, size, x, y, range, elements_per_process;
 
-    double start_time = MPI_Wtime();
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+    double start_time = MPI_Wtime();
 
     //=========================================
     if (rank == 0) { // Master Process
@@ -64,19 +64,19 @@ int main(int argc, char* argv[]) {
     if(rank != 0)
     {
        start_index = x +((rank-1) * elements_per_process);
-       end_index;
-       if(rank == size - 1){
+    end_index;
+    if(rank == size - 1){
             end_index = start_index + (elements_per_process + ( range % (size - 1) ));}
-      else{
-          end_index = start_index + elements_per_process;
-          }
+    else{
+        end_index = start_index + elements_per_process;
+        }
     }
 
     int subarray_count=0;
     for(int i = start_index; i < end_index; i++){
-          if(isPrime(i)){
-             subarray_count++;
-          }
+        if(isPrime(i)){
+            subarray_count++;
+        }
     }
     // Reduce all local counts to get the total count at root
     int total_count;
